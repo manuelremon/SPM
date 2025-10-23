@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SPM · Inicio</title>
+  <link rel="icon" href="/assets/spm-logo.png" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body data-page="home" data-requires-auth">
+  <div class="main-container">
+
+    <header class="app-header" id="globalNav" data-nav-open="false">
+      <div class="app-header__inner">
+        <a class="app-logo" href="home.html" aria-label="Ir al inicio">
+          <img src="assets/spm-logo.png" alt="Logotipo de SPM"/>
+        </a>
+        <button type="button" class="app-header__toggle" id="navToggle" aria-controls="primaryNav" aria-expanded="false">
+          <span class="sr-only">Alternar navegación</span>
+          <span class="app-header__toggle-bar"></span>
+          <span class="app-header__toggle-bar"></span>
+          <span class="app-header__toggle-bar"></span>
+        </button>
+        <nav class="app-nav" id="primaryNav" aria-label="Navegación principal">
+          <ul class="app-menu" role="menubar">
+            <li class="app-menu__item has-submenu" data-menu="inicio" role="none">
+              <button type="button" class="app-menu__trigger is-current" aria-haspopup="true" aria-expanded="false">
+                <span>Inicio</span>
+                <span class="app-menu__caret" aria-hidden="true"></span>
+              </button>
+              <div class="app-submenu" role="menu" hidden aria-hidden="true">
+                <a href="mi-cuenta.html" class="app-submenu__link" role="menuitem">Mi Cuenta</a>
+                <a href="preferencias.html" class="app-submenu__link" role="menuitem">Preferencias</a>
+                <button type="button" class="app-submenu__link" id="menuCerrarSesion" role="menuitem">Cerrar sesión</button>
+                <button type="button" class="app-submenu__link" id="menuAyuda" role="menuitem">Ayuda</button>
+              </div>
+            </li>
+            <li class="app-menu__item has-submenu" data-menu="solicitudes" role="none">
+              <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
+                <span>Solicitudes</span>
+                <span class="app-menu__caret" aria-hidden="true"></span>
+              </button>
+              <div class="app-submenu" role="menu" hidden aria-hidden="true">
+                <a href="mis-solicitudes.html" class="app-submenu__link" role="menuitem">Mis solicitudes</a>
+                <a href="crear-solicitud.html" class="app-submenu__link" role="menuitem">Crear solicitud</a>
+              </div>
+            </li>
+            <li class="app-menu__item" role="none">
+              <a href="notificaciones.html" class="app-menu__link has-badge" role="menuitem">Notificaciones <span class="badge hide" id="navNotificationsBadge">0</span></a>
+            </li>
+            <li class="app-menu__item" role="none">
+              <a href="presupuesto.html" class="app-menu__link hide" id="navPresupuesto" role="menuitem">Presupuesto</a>
+            </li>
+            <li class="app-menu__item has-submenu hide" id="adminMenuItem" data-menu="admin" role="none">
+              <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
+                <span>Panel de control</span>
+                <span class="app-menu__caret" aria-hidden="true"></span>
+              </button>
+              <div class="app-submenu" role="menu" hidden aria-hidden="true">
+                <a href="admin-dashboard.html" class="app-submenu__link" role="menuitem">Dashboard</a>
+                <a href="admin-solicitudes.html" class="app-submenu__link" role="menuitem">Solicitudes</a>
+                <a href="admin-usuarios.html" class="app-submenu__link" role="menuitem">Usuarios</a>
+                <a href="admin-materiales.html" class="app-submenu__link" role="menuitem">Materiales</a>
+                <a href="admin-centros.html" class="app-submenu__link" role="menuitem">Centros</a>
+                <a href="admin-almacenes.html" class="app-submenu__link" role="menuitem">Almacenes</a>
+                <div class="app-submenu__divider" role="separator"></div>
+                <div class="app-submenu__section">
+                  <span class="app-submenu__section-title">Reportes y auditoría</span>
+                  <a href="admin-reportes.html" class="app-submenu__link" role="menuitem">Reportes</a>
+                </div>
+              </div>
+            </li>
+            <li class="app-menu__item hide" id="plannerMenuItem" role="none">
+              <a href="planificador.html" class="app-menu__link" role="menuitem">Planificador</a>
+            </li>
+            <li class="app-menu__item hide" id="approverMenuItem" role="none">
+              <a href="mis-solicitudes.html?filter=pending_approval" class="app-menu__link" role="menuitem">Aprobaciones pendientes</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="content-section content-section--home" id="home-content">
+        <section class="home-hero" aria-labelledby="homeTitle">
+          <h1 class="home-hero__title" id="homeTitle">Bienvenido <span id="userName" class="home-hero__name"></span></h1>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <aside class="system-console hide" id="systemConsole" aria-live="polite">
+    <header class="system-console__header">
+      <span class="system-console__title">Estado del Sistema</span>
+      <div class="system-console__actions">
+        <span class="system-console__timestamp" id="systemConsoleTimestamp">Actualizado: --</span>
+        <button type="button" class="system-console__toggle" id="systemConsoleToggle" aria-label="Minimizar consola" aria-expanded="true" aria-controls="systemConsoleBody">-</button>
+      </div>
+    </header>
+    <div class="system-console__body" id="systemConsoleBody">
+      <div class="system-console__summary" id="systemConsoleSummary" role="status"></div>
+      <div class="system-console__message hide" id="systemConsoleMessage"></div>
+      <div class="system-console__list" id="systemConsoleList"></div>
+    </div>
+  </aside>
+
+  <div class="toasts" id="toasts"></div>
+  <script type="module">
+    import { ensureAuth } from './auth_guard.js';
+    await ensureAuth();
+    import './app.js';
+  </script>
+</body>
+</html>
+
+
+
+
+

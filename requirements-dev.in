@@ -1,0 +1,5 @@
+-r requirements.txt
+black==24.8.0
+ruff==0.5.7
+pip-audit==2.6.1
+pip-tools==7.4.1

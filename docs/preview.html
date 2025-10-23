@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SPM Brand Preview</title>
+<link rel="stylesheet" href="spm_tokens.css" />
+<style>
+  body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; padding: 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+  .card { border: 1px solid #E6E6E6; border-radius: 12px; padding: 16px; }
+  .bg-blue { background: var(--spm-blue); padding: 16px; border-radius: 12px; }
+  img, svg { width: 100%; height: auto; }
+</style>
+<h1>SPM — Vista rápida</h1>
+<div class="grid">
+  <div class="card">
+    <h3>Icono primario</h3>
+    <img src="spm_icon_primary_512.svg" alt="SPM icon primary" />
+  </div>
+  <div class="card">
+    <h3>Monocromo</h3>
+    <img src="spm_icon_mono_petroleo_512.svg" alt="SPM icon mono" />
+  </div>
+  <div class="card">
+    <h3>Invertido</h3>
+    <div class="bg-blue">
+      <img src="spm_icon_invertido_512.svg" alt="SPM icon invertido" />
+    </div>
+  </div>
+  <div class="card">
+    <h3>Lockup horizontal</h3>
+    <img src="spm_lockup_horizontal_primary.svg" alt="SPM lockup horizontal" />
+  </div>
+</div>
+
+<h2>Botones y badges</h2>
+<button class="button-primary">Solicitar materiales</button>
+<span class="badge-approved" style="padding:6px 10px;border-radius:6px;margin-left:8px;">Aprobado</span>
+<span class="badge-pending" style="padding:6px 10px;border-radius:6px;margin-left:8px;">Pendiente</span>
+<span class="badge-rejected" style="padding:6px 10px;border-radius:6px;margin-left:8px;">Rechazado</span>
+</html>
+

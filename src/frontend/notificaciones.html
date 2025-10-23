@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SPM · Notificaciones</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="main-container">
+
+    <header class="app-header" id="globalNav" data-nav-open="false">
+      <div class="app-header__inner">
+        <a class="app-logo" href="home.html" aria-label="Ir al inicio">
+          <img src="assets/spm-logo.png" alt="Logotipo de SPM"/>
+        </a>
+        <button type="button" class="app-header__toggle" id="navToggle" aria-controls="primaryNav" aria-expanded="false">
+          <span class="sr-only">Alternar navegación</span>
+          <span class="app-header__toggle-bar"></span>
+          <span class="app-header__toggle-bar"></span>
+          <span class="app-header__toggle-bar"></span>
+        </button>
+        <nav class="app-nav" id="primaryNav" aria-label="Navegación principal">
+          <ul class="app-menu">
+            <li class="app-menu__item has-submenu" data-menu="inicio" role="none">
+              <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
+                <span>Inicio</span>
+                <span class="app-menu__caret" aria-hidden="true"></span>
+              </button>
+              <div class="app-submenu" role="menu" hidden aria-hidden="true">
+                <a href="mi-cuenta.html" class="app-submenu__link" role="menuitem">Mi Cuenta</a>
+                <a href="preferencias.html" class="app-submenu__link" role="menuitem">Preferencias</a>
+                <button type="button" class="app-submenu__link" id="menuCerrarSesion" role="menuitem">Cerrar sesión</button>
+                <button type="button" class="app-submenu__link" id="menuAyuda" role="menuitem">Ayuda</button>
+              </div>
+            </li>
+            <li class="app-menu__item has-submenu" data-menu="solicitudes" role="none">
+              <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
+                <span>Solicitudes</span>
+                <span class="app-menu__caret" aria-hidden="true"></span>
+              </button>
+              <div class="app-submenu" role="menu" hidden aria-hidden="true">
+                <a href="mis-solicitudes.html" class="app-submenu__link" role="menuitem">Mis solicitudes</a>
+                <a href="crear-solicitud.html" class="app-submenu__link" role="menuitem">Crear solicitud</a>
+              </div>
+            </li>
+            <li class="app-menu__item" role="none">
+              <a href="notificaciones.html" class="app-menu__link has-badge">Notificaciones <span class="badge hide" id="navNotificationsBadge">0</span></a>
+            </li>
+            <li class="app-menu__item" role="none">
+              <a href="presupuesto.html" class="app-menu__link hide" id="navPresupuesto">Presupuesto</a>
+            </li>
+            <li class="app-menu__item has-submenu hide" id="adminMenuItem" data-menu="admin" role="none">
+              <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
+                <span>Panel de control</span>
+                <span class="app-menu__caret" aria-hidden="true"></span>
+              </button>
+              <div class="app-submenu" role="menu" hidden aria-hidden="true">
+                <a href="admin-dashboard.html" class="app-submenu__link" role="menuitem">Dashboard</a>
+                <a href="admin-solicitudes.html" class="app-submenu__link" role="menuitem">Solicitudes</a>
+                <a href="admin-usuarios.html" class="app-submenu__link" role="menuitem">Usuarios</a>
+                <a href="admin-materiales.html" class="app-submenu__link" role="menuitem">Materiales</a>
+                <a href="admin-centros.html" class="app-submenu__link" role="menuitem">Centros</a>
+                <a href="admin-almacenes.html" class="app-submenu__link" role="menuitem">Almacenes</a>
+                <div class="app-submenu__divider" role="separator"></div>
+                <div class="app-submenu__section">
+                  <span class="app-submenu__section-title">Reportes y auditoría</span>
+                  <a href="admin-reportes.html" class="app-submenu__link" role="menuitem">Reportes</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+<main class="content">
+      <div class="content-section content-section--wide">
+        <div class="page-header">
+          <div>
+            <p class="overline">Resumen</p>
+            <h1>Notificaciones</h1>
+            <p class="muted">Seguí el estado de tus solicitudes y las aprobaciones pendientes.</p>
+          </div>
+        </div>
+
+        <section class="pane" id="pendingApprovalsSection" style="display:none;">
+          <header class="section-head">
+            <h2>Solicitudes para aprobar</h2>
+            <p class="helper">Estas solicitudes requieren tu acción como aprobador.</p>
+          </header>
+          <div class="table" id="pendingApprovalsTable" style="margin-top:12px;">
+            <table data-sortable-table>
+              <thead>
+                <tr><th>ID</th><th>Centro</th><th>Sector</th><th>Justificación</th><th>Monto</th><th>Creada</th><th>Acciones</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="muted" id="pendingApprovalsEmpty" style="margin-top:12px;display:none;">No tenés solicitudes pendientes de aprobación.</p>
+        </section>
+
+        <section class="pane admin-pane" id="adminCentroRequestsSection" style="display:none;">
+          <header class="section-head">
+            <h2>Solicitudes de acceso a centros</h2>
+            <p class="helper">Gestiona las solicitudes de habilitacion de centros enviadas por los usuarios.</p>
+          </header>
+          <div id="adminCentroRequestsContainer" class="admin-requests-list"></div>
+          <p class="muted" id="adminCentroRequestsEmpty" style="margin-top:12px;display:none;">No hay solicitudes de centros pendientes.</p>
+        </section>
+
+        <section class="pane admin-pane" id="adminNewUsersSection" style="display:none;margin-top:20px;">
+          <header class="section-head">
+            <h2>Registros de nuevos usuarios</h2>
+            <p class="helper">Usuarios recientemente registrados que requieren revision.</p>
+          </header>
+          <div id="adminNewUsersContainer" class="admin-requests-list"></div>
+          <p class="muted" id="adminNewUsersEmpty" style="margin-top:12px;display:none;">No hay registros pendientes.</p>
+        </section>
+
+        <section class="pane" style="margin-top:20px;">
+          <header class="section-head">
+            <h2>Actividad reciente</h2>
+            <p class="helper">Tus notificaciones más recientes aparecen primero.</p>
+          </header>
+          <div id="notificationsContainer" class="notifications-list"></div>
+          <p class="muted" id="notificationsEmpty" style="margin-top:12px;display:none;">Sin notificaciones por ahora.</p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="toasts" id="toasts"></div>
+  <script src="app.js" defer></script>
+</body>
+</html>
+

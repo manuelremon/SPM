@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">SPM Logo</title>
+  <defs>
+    <linearGradient id="outerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1f2433"/>
+      <stop offset="48%" stop-color="#ff2b7a"/>
+      <stop offset="100%" stop-color="#3a4de8"/>
+    </linearGradient>
+    <linearGradient id="innerGrad" x1="30%" y1="0%" x2="70%" y2="100%">
+      <stop offset="0%" stop-color="#131a2b" stop-opacity=".92"/>
+      <stop offset="100%" stop-color="#080b17" stop-opacity=".85"/>
+    </linearGradient>
+  </defs>
+
+  <polygon points="256,16 494,152 494,360 256,496 18,360 18,152" fill="url(#outerGrad)"/>
+  <polygon points="256,44 458,160 458,352 256,468 54,352 54,160" fill="url(#innerGrad)"/>
+  <polygon points="96,356 416,356 256,108" fill="#151829"/>
+  <polygon points="106,348 406,348 256,124" fill="#f9d94a"/>
+  <text x="50%" y="58%" text-anchor="middle" font-size="96" font-family="Inter, 'Segoe UI', sans-serif" font-weight="700" fill="#1a1d2b" letter-spacing=".04em">SPM</text>
+</svg>

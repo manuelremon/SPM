@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SPM · Admin Usuarios</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body data-page="admin-usuarios" data-requires-auth>
+  <div class="main-container">
+
+    <header class="app-header" id="globalNav" data-nav-open="false">
+      <div class="app-header__inner">
+        <a class="app-logo" href="home.html" aria-label="Ir al inicio">
+          <img src="assets/spm-logo.png" alt="Logotipo de SPM"/>
+        </a>
+        <button type="button" class="app-header__toggle" id="navToggle" aria-controls="primaryNav" aria-expanded="false">
+          <span class="sr-only">Alternar navegación</span>
+          <span class="app-header__toggle-bar"></span>
+          <span class="app-header__toggle-bar"></span>
+          <span class="app-header__toggle-bar"></span>
+        </button>
+        <nav class="app-nav" id="primaryNav" aria-label="Navegación principal">
+          <ul class="app-menu" role="menubar">
+            <li class="app-menu__item has-submenu" data-menu="inicio" role="none">
+              <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
+                <span>Inicio</span>
+                <span class="app-menu__caret" aria-hidden="true"></span>
+              </button>
+              <div class="app-submenu" role="menu" hidden aria-hidden="true">
+                <a href="mi-cuenta.html" class="app-submenu__link" role="menuitem">Mi Cuenta</a>
+                <a href="preferencias.html" class="app-submenu__link" role="menuitem">Preferencias</a>
+                <button type="button" class="app-submenu__link" id="menuCerrarSesion" role="menuitem">Cerrar sesión</button>
+                <button type="button" class="app-submenu__link" id="menuAyuda" role="menuitem">Ayuda</button>
+              </div>
+            </li>
+            <li class="app-menu__item has-submenu" data-menu="solicitudes" role="none">
+              <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
+                <span>Solicitudes</span>
+                <span class="app-menu__caret" aria-hidden="true"></span>
+              </button>
+              <div class="app-submenu" role="menu" hidden aria-hidden="true">
+                <a href="mis-solicitudes.html" class="app-submenu__link" role="menuitem">Mis solicitudes</a>
+                <a href="crear-solicitud.html" class="app-submenu__link" role="menuitem">Crear solicitud</a>
+              </div>
+            </li>
+            <li class="app-menu__item" role="none">
+              <a href="notificaciones.html" class="app-menu__link has-badge" role="menuitem">Notificaciones <span class="badge hide" id="navNotificationsBadge">0</span></a>
+            </li>
+            <li class="app-menu__item" role="none">
+              <a href="presupuesto.html" class="app-menu__link hide" id="navPresupuesto" role="menuitem">Presupuesto</a>
+            </li>
+            <li class="app-menu__item has-submenu" id="adminMenuItem" data-menu="admin" role="none">
+              <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
+                <span>Panel de control</span>
+                <span class="app-menu__caret" aria-hidden="true"></span>
+              </button>
+              <div class="app-submenu" role="menu" hidden aria-hidden="true">
+                <a href="admin-dashboard.html" class="app-submenu__link" role="menuitem">Dashboard</a>
+                <a href="admin-solicitudes.html" class="app-submenu__link" role="menuitem">Solicitudes</a>
+                <a href="admin-usuarios.html" class="app-submenu__link" role="menuitem">Usuarios</a>
+                <a href="admin-materiales.html" class="app-submenu__link" role="menuitem">Materiales</a>
+                <a href="admin-centros.html" class="app-submenu__link" role="menuitem">Centros</a>
+                <a href="admin-almacenes.html" class="app-submenu__link" role="menuitem">Almacenes</a>
+                <div class="app-submenu__divider" role="separator"></div>
+                <div class="app-submenu__section">
+                  <span class="app-submenu__section-title">Reportes y auditoría</span>
+                  <a href="admin-reportes.html" class="app-submenu__link" role="menuitem">Reportes</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+<main class="content">
+      <div class="content-section content-section--wide">
+      <div class="page-header">
+        <div>
+          <p class="overline">Administración</p>
+          <h1>Gestión de usuarios</h1>
+          <p class="muted">Consultá y actualizá los perfiles existentes del sistema.</p>
+        </div>
+        <button class="btn pri" disabled>Crear usuario</button>
+      </div>
+      <section class="pane admin-users">
+        <div>
+          <header class="section-head">
+            <h2>Usuarios registrados</h2>
+            <p class="helper">Filtrá por nombre, rol, centro o identificador SPM.</p>
+          </header>
+          <div class="admin-toolbar">
+            <input id="adminUserSearch" placeholder="Buscar por nombre, rol o centro" autocomplete="off" data-filter-target="#adminUsersTable tbody" data-filter-items="tr" data-filter-empty="#adminUsersEmpty"/>
+            <button class="btn" id="adminUserSearchBtn">Buscar</button>
+            <button class="btn sec" id="adminUserResetBtn">Limpiar</button>
+            <span class="muted" id="adminUserTotal"></span>
+          </div>
+          <div class="table">
+            <table id="adminUsersTable" data-sortable-table>
+              <thead>
+                <tr><th>ID</th><th>Nombre</th><th>Rol</th><th>Posición</th><th>Sector</th><th>Centros</th><th>Emails / Aprobadores</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="muted" id="adminUsersEmpty" style="display:none;">No se encontraron usuarios con ese criterio.</p>
+        </div>
+        <div class="admin-user-detail" id="adminUserDetail" aria-live="polite">
+          <div class="detail-header" style="margin-bottom:8px;">
+            <h3 id="adminUserTitle">Perfil sin selección</h3>
+            <span class="pill" id="adminUserRolePill" style="display:none;"></span>
+          </div>
+          <form id="adminUserForm">
+            <div class="form-grid form-grid--compact">
+              <div>
+                <label for="adminUserId">ID SPM</label>
+                <input id="adminUserId" readonly />
+              </div>
+              <div>
+                <label for="adminUserMail">Correo corporativo</label>
+                <input id="adminUserMail" type="email" placeholder="usuario@empresa.com" autocomplete="off" />
+              </div>
+            </div>
+            <div class="form-grid form-grid--compact">
+              <div>
+                <label for="adminUserNombre">Nombre</label>
+                <input id="adminUserNombre" autocomplete="off" />
+              </div>
+              <div>
+                <label for="adminUserApellido">Apellido</label>
+                <input id="adminUserApellido" autocomplete="off" />
+              </div>
+            </div>
+            <div class="form-grid form-grid--compact">
+              <div>
+                <label for="adminUserRol">Rol</label>
+                <input id="adminUserRol" placeholder="Ej: Administrador, Aprobador" autocomplete="off" list="catalogRolesList" />
+              </div>
+              <div>
+                <label for="adminUserPosicion">Posición</label>
+                <input id="adminUserPosicion" placeholder="Ej: Gerente Regional" autocomplete="off" list="catalogPuestosList" />
+              </div>
+              <div>
+                <label for="adminUserSector">Sector</label>
+                <input id="adminUserSector" autocomplete="off" list="catalogSectoresList" />
+              </div>
+            </div>
+            <label for="adminUserCentros">Centros autorizados</label>
+            <textarea id="adminUserCentros" rows="3" placeholder="Separá por coma o salto de línea"></textarea>
+            <div class="form-grid form-grid--compact">
+              <div>
+                <label for="adminUserJefe">Jefe directo</label>
+                <input id="adminUserJefe" placeholder="mail o ID" autocomplete="off" />
+              </div>
+              <div>
+                <label for="adminUserGerente1">Gerente 1</label>
+                <input id="adminUserGerente1" placeholder="mail o ID" autocomplete="off" />
+              </div>
+              <div>
+                <label for="adminUserGerente2">Gerente 2</label>
+                <input id="adminUserGerente2" placeholder="mail o ID" autocomplete="off" />
+              </div>
+            </div>
+            <div class="form-grid form-grid--compact">
+              <div>
+                <label for="adminUserPassword">Nueva contraseña</label>
+                <input id="adminUserPassword" type="password" autocomplete="new-password" placeholder="Opcional" />
+              </div>
+              <div>
+                <label for="adminUserPasswordConfirm">Confirmar contraseña</label>
+                <input id="adminUserPasswordConfirm" type="password" autocomplete="new-password" placeholder="Repetí la contraseña" />
+              </div>
+            </div>
+            <div class="actions" style="justify-content:flex-start;margin-top:10px;">
+              <button class="btn pri" id="adminUserGuardar" type="submit" disabled>Guardar cambios</button>
+              <button class="btn sec" id="adminUserReset" type="button" disabled>Descartar</button>
+            </div>
+            <p class="muted" id="adminUserHint" style="margin-top:4px;">Seleccioná un usuario para editarlo.</p>
+          </form>
+        </div>
+      </section>
+      </div>
+    </main>
+  </div>
+
+  <datalist id="catalogRolesList"></datalist>
+  <datalist id="catalogPuestosList"></datalist>
+  <datalist id="catalogSectoresList"></datalist>
+
+  <div class="toasts" id="toasts"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
+

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SPM · AI Console</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body data-page="ai-console" data-requires-auth>
+  <div class="main-container">
+
+    <header class="app-header" id="globalNav" data-nav-open="false">
+      <div class="app-header__inner">
+        <a class="app-logo" href="home.html" aria-label="Ir al inicio">
+          <img src="assets/spm-logo.png" alt="Logotipo de SPM"/>
+        </a>
+        <button type="button" class="app-header__toggle" id="navToggle" aria-controls="primaryNav" aria-expanded="false">
+          <span class="sr-only">Alternar navegación</span>
+          <span class="app-header__toggle-bar"></span>
+          <span class="app-header__toggle-bar"></span>
+          <span class="app-header__toggle-bar"></span>
+        </button>
+        <nav class="app-nav" id="primaryNav" aria-label="Navegación principal">
+          <ul class="app-menu" role="menubar">
+            <li class="app-menu__item has-submenu" data-menu="inicio" role="none">
+              <button type="button" class="app-menu__trigger" aria-haspopup="true" aria-expanded="false">
+                <span>Inicio</span>
+                <span class="app-menu__caret" aria-hidden="true"></span>
+              </button>
+              <div class="app-submenu" role="menu" hidden aria-hidden="true">
+                <a href="mi-cuenta.html" class="app-submenu__link" role="menuitem">Mi Cuenta</a>
+                <a href="preferencias.html" class="app-submenu__link" role="menuitem">Preferencias</a>
+                <button type="button" class="app-submenu__link" id="menuCerrarSesion" role="menuitem">Cerrar sesión</button>
+                <button type="button" class="app-submenu__link" id="menuAyuda" role="menuitem">Ayuda</button>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+<main class="content">
+      <div class="content-section content-section--wide">
+        <div class="page-header">
+          <div>
+            <h1>AI Assistant Console</h1>
+          </div>
+        </div>
+
+        <div class="pane">
+          <div class="field field--textarea">
+            <label for="queryInput">Pregunta o Diff</label>
+            <textarea id="queryInput" rows="8" placeholder="Escribe tu pregunta sobre el código o pega un diff para revisión"></textarea>
+          </div>
+          <div class="actions form-actions">
+            <button class="btn pri" id="btnBuscar">Buscar Contexto</button>
+            <button class="btn sec" id="btnRevision">Revisión de Diff</button>
+          </div>
+        </div>
+
+        <div id="results" class="pane" style="display: none;">
+          <h2>Contextos Encontrados</h2>
+          <div id="contextsList"></div>
+          <h2>Prompt para Copilot</h2>
+          <textarea id="promptOutput" rows="10" readonly></textarea>
+          <div class="actions">
+            <button class="btn pri" id="btnCopyPrompt">Copiar Prompt</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="toasts" id="toasts"></div>
+  <script src="/app.js"></script>
+  <script>
+    // AI Console functionality
+    document.getElementById('btnBuscar').addEventListener('click', async () => {
+      const query = document.getElementById('queryInput').value.trim();
+      if (!query) return;
+
+      try {
+        const response = await api('/api/ai/ask', { query });
+        displayResults(response);
+      } catch (error) {
+        toast('Error al buscar contexto', 'error');
+      }
+    });
+
+    document.getElementById('btnRevision').addEventListener('click', async () => {
+      const diff = document.getElementById('queryInput').value.trim();
+      if (!diff) return;
+
+      try {
+        const response = await api('/api/ai/suggest-review', { diff });
+        displayReview(response);
+      } catch (error) {
+        toast('Error al revisar diff', 'error');
+      }
+    });
+
+    document.getElementById('btnCopyPrompt').addEventListener('click', () => {
+      const prompt = document.getElementById('promptOutput');
+      prompt.select();
+      document.execCommand('copy');
+      toast('Prompt copiado al portapapeles', 'success');
+    });
+
+    function displayResults(data) {
+      const results = document.getElementById('results');
+      const contextsList = document.getElementById('contextsList');
+      const promptOutput = document.getElementById('promptOutput');
+
+      contextsList.innerHTML = data.contexts.map(ctx =>
+        `<div class="context-item">
+          <h4>${ctx.title} (score: ${ctx.score.toFixed(2)})</h4>
+          <pre>${ctx.text.substring(0, 500)}...</pre>
+        </div>`
+      ).join('');
+
+      promptOutput.value = data.prompt;
+      results.style.display = 'block';
+    }
+
+    function displayReview(data) {
+      const results = document.getElementById('results');
+      const contextsList = document.getElementById('contextsList');
+      const promptOutput = document.getElementById('promptOutput');
+
+      contextsList.innerHTML = `
+        <div class="review-summary">
+          <h4>Resumen</h4>
+          <p>${data.summary}</p>
+          <h4>Riesgos</h4>
+          <ul>${data.risks.map(r => `<li>${r}</li>`).join('')}</ul>
+          <h4>Tests a Agregar</h4>
+          <ul>${data.tests.map(t => `<li>${t}</li>`).join('')}</ul>
+        </div>
+      `;
+
+      promptOutput.value = data.prompt;
+      results.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

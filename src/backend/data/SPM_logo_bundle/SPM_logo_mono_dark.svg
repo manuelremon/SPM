@@ -1,0 +1,24 @@
+<?xml version="1.0" ?>
+<ns0:svg xmlns:ns0="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  
+  
+  <ns0:polygon points="902.20,737.28 512.00,962.56 121.80,737.28" fill="#000000"/>
+  
+  
+  <ns0:polygon points="121.80,737.28 121.80,286.72 512.00,61.44" fill="#000000"/>
+  
+  
+  <ns0:polygon points="512.00,61.44 902.20,286.72 902.20,737.28" fill="#000000"/>
+  
+  
+  <ns0:polygon points="512.00,899.48 176.43,318.26 847.57,318.26" fill="#FFFFFF"/>
+  
+  
+  <ns0:rect x="428.11" y="542.20" width="167.78" height="10.07" rx="5.03" fill="#000000" opacity="0.10"/>
+  
+  
+  <ns0:text x="512.00" y="528.78" text-anchor="middle" fill="#000000" font-size="167.78" font-weight="900" font-family="Sora, Space Grotesk, Inter, Arial, sans-serif" letter-spacing="-2" dominant-baseline="alphabetic">SPM</ns0:text>
+  
+
+</ns0:svg>
+

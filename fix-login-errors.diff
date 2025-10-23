@@ -1,0 +1,196 @@
+diff --git a/src/frontend/app.js b/src/frontend/app.js
+index 9e46784..13b4f88 100644
+--- a/src/frontend/app.js
++++ b/src/frontend/app.js
+@@ -2760,6 +2760,141 @@ function initReportesPage() {
+
+
+
++async function login() {
++  const id = $("#id").value.trim();
++  const password = $("#pw").value;
++
++  try {
++    await api("/auth/login", {
++      method: "POST",
++      body: JSON.stringify({ id, password }),
++    });
++    window.location.href = "home.html";
++  } catch (err) {
++    toast(err.message);
++  }
++}
++
++async function register() {
++  const id = $("#id").value.trim();
++  const password = $("#pw").value;
++
++  if (!id || password.length < 6) {
++    toast("Ingrese email/usuario y contraseña (mínimo 6 caracteres)");
++    return;
++  }
++
++  const nombre = prompt("Nombre:");
++  const apellido = prompt("Apellido:");
++
++  if (!nombre || !apellido) {
++    toast("Nombre y apellido requeridos");
++    return;
++  }
++
++  try {
++    await api("/auth/register", {
++      method: "POST",
+      body: JSON.stringify({ id, password, nombre, apellido, rol: "Solicitante" }),
+    });
+    toast("Usuario registrado ✅. Ahora puede iniciar sesión.", true);
+  } catch (err) {
+    toast(err.message);
+  }
++}
++
++function recover() {
++  const id = $("#id").value.trim();
++
++  if (!id) {
++    toast("Ingrese su ID o email para recuperar la contraseña");
++    return;
+  }
++
++  const mailto = `mailto:manuelremon@live.com.ar?subject=Recuperación%20de%20contraseña&body=Por%20favor%20asistir%20al%20usuario:%20${encodeURICompon
+ent(id)}`;                                                                                                                                             +  window.location.href = mailto;
++}
++
++function help() {
++  const mailto = `mailto:manuelremon@live.com.ar?subject=Ayuda%20SPM&body=Hola%20Manuel,%20necesito%20ayuda.`;
++  window.location.href = mailto;
++}
++
++function initAuthPage() {
++  const loginBtn = $("#loginBtn");
++  const registerBtn = $("#register");
++  const recoverBtn = $("#recover");
++  const helpBtn = $("#help");
++  const idInput = $("#id");
++  const pwInput = $("#pw");
++
++  if (loginBtn) {
++    on(loginBtn, "click", async (event) => {
++      event.preventDefault();
++      try {
++        setButtonLoading(loginBtn, true);
++        await login();
++      } catch (err) {
++        console.error("Error en login:", err);
++        toast("Error al iniciar sesión: " + err.message);
++      } finally {
+        setButtonLoading(loginBtn, false);
+      }
+    });
+  }
+  if (registerBtn) {
+    on(registerBtn, "click", async (event) => {
+      event.preventDefault();
+      try {
+        setButtonLoading(registerBtn, true);
+        await register();
+      } catch (err) {
+        console.error("Error en registro:", err);
+        toast("Error al registrar: " + err.message);
+      } finally {
+        setButtonLoading(registerBtn, false);
+      }
+    });
+  }
+  if (recoverBtn) {
+    on(recoverBtn, "click", async (event) => {
+      event.preventDefault();
+      try {
+        setButtonLoading(recoverBtn, true);
+        await recover();
+      } catch (err) {
+        console.error("Error en recuperación:", err);
+        toast("Error al recuperar contraseña: " + err.message);
+      } finally {
+        setButtonLoading(recoverBtn, false);
+      }
+    });
+  }
+  if (helpBtn) {
+    on(helpBtn, "click", (event) => {
+      event.preventDefault();
+      try {
+        help();
+      } catch (err) {
+        console.error("Error en ayuda:", err);
+        toast("Error al abrir ayuda: " + err.message);
+      }
+    });
+  }
+  const submitOnEnter = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      login();
+    }
+  };
+  if (idInput) {
+    on(idInput, "keyup", submitOnEnter);
+  }
+  if (pwInput) {
+    on(pwInput, "keyup", submitOnEnter);
+  }
++}
++
+ // InicializaciÃ³n de pÃ¡ginas especÃ­ficas
+
+ document.addEventListener("DOMContentLoaded", () => {
+@@ -2767,12 +2902,29 @@ document.addEventListener("DOMContentLoaded", () => {
+   const currentPage = window.location.pathname.split("/").pop();
+
+   if (!currentPage || currentPage === "index.html") {
+-    initAuthPage();
++    if (typeof initAuthPage === 'function') {
++      initAuthPage();
++    } else {
++      console.error('initAuthPage is not defined');
++      toast('Error: Función de inicialización de auth no encontrada');
++    }
+     return;
+   }
+
+-  initProtectedApp(currentPage).catch((err) => {
+-    console.error(err);
+-    toast("No se pudo inicializar la aplicacion");
+-  });
+-});
+\ No newline at end of file
++  if (typeof initProtectedApp === 'function') {
++    initProtectedApp(currentPage).catch((err) => {
++      console.error(err);
++      toast("No se pudo inicializar la aplicacion");
++    });
++  } else {
++    console.error('initProtectedApp is not defined');
+    toast('Error: Función de inicialización protegida no encontrada');
+  }
++});
++
++// Exponer funciones globales para acceso desde HTML y otros scripts
++window.initAuthPage = initAuthPage;
++window.login = login;
++window.register = register;
++window.recover = recover;
++window.help = help;
+diff --git a/src/frontend/index.html b/src/frontend/index.html
+index 1391278..1c74787 100644
+--- a/src/frontend/index.html
++++ b/src/frontend/index.html
+@@ -43,7 +43,7 @@
+                 <button class="btn sec" type="button" id="register">Registrar</button>
+                 <button class="btn sec" type="button" id="recover">Recuperar contrasena</button>
+               </div>
+-              <button class="btn pri auth-card__submit" type="button" id="login">Ingresar</button>
++              <button class="btn pri auth-card__submit" type="button" id="loginBtn">Ingresar</button>
+             </div>
+           </form>
+         </div>

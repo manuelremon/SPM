@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: spm-backend
+    env: python
+    region: oregon
+    runtime: python3.9
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python src/backend/app.py
+    autoDeploy: true
+    envVars:
+      - key: FLASK_ENV
+        value: production

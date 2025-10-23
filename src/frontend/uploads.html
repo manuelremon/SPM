@@ -1,0 +1,65 @@
+<input id="f" type="file" />
+<button id="up">Subir</button>
+<div style="margin:8px 0">
+  <input id="q" placeholder="buscar nombre o MIME" />
+  <select id="sort">
+    <option value="created_at">fecha</option>
+    <option value="original_name">nombre</option>
+    <option value="size">tamaño</option>
+    <option value="mime">mime</option>
+  </select>
+  <select id="order">
+    <option value="desc">desc</option>
+    <option value="asc">asc</option>
+  </select>
+  <button id="apply">Aplicar</button>
+</div>
+<ul id="list"></ul>
+<div id="pager" style="margin-top:8px"></div>
+<script type="module">
+  import './app.js';
+  import { FilesAPI } from './api.js';
+  const ul = document.querySelector('#list');
+  const pager = document.querySelector('#pager');
+  const state = { page:1, per_page:10, q:'', sort:'created_at', order:'desc' };
+
+  const fetchAndRender = async () => {
+    const {items, meta} = await FilesAPI.query(state).list();
+    ul.innerHTML = items.map(f=>`
+      <li>
+        ${f.original_name} (${Math.round(f.size/1024)} KB)
+        <a href="${FilesAPI.downloadUrl(f.id)}">descargar</a>
+        <button data-id="${f.id}" class="del">borrar</button>
+      </li>`).join('');
+    ul.querySelectorAll('.del').forEach(b=>b.onclick = async ()=>{
+      await FilesAPI.remove(b.dataset.id);
+      fetchAndRender();
+    });
+    pager.innerHTML = meta.pages>1 ? `
+      <button id="prev" ${meta.page===1?'disabled':''}>Prev</button>
+      <span> ${meta.page} / ${meta.pages} </span>
+      <button id="next" ${meta.page===meta.pages?'disabled':''}>Next</button>
+    ` : '';
+    const prev = document.querySelector('#prev');
+    const next = document.querySelector('#next');
+    prev && (prev.onclick = ()=>{ state.page = Math.max(1, state.page-1); fetchAndRender(); });
+    next && (next.onclick = ()=>{ state.page = state.page+1; fetchAndRender(); });
+  };
+  document.querySelector('#up').onclick = async ()=>{
+    const file = document.querySelector('#f').files[0];
+    if (!file) return alert('selecciona un archivo');
+    try {
+      const res = await FilesAPI.upload(file);
+      if (res.duplicate_of) alert('Archivo duplicado. Refiere ID '+res.duplicate_of);
+      fetchAndRender();
+    } catch(e){ alert(e.message); }
+  };
+  document.querySelector('#apply').onclick = ()=>{
+    state.q = document.querySelector('#q').value.trim();
+    state.sort = document.querySelector('#sort').value;
+    state.order = document.querySelector('#order').value;
+    state.page = 1;
+    fetchAndRender();
+  };
+  fetchAndRender();
+</script>

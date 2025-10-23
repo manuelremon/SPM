@@ -1,0 +1,329 @@
+.\.venv\Scripts\activate
+python -m src.backend.app
+
+
+
+# activar venv
+.\.venv\Scripts\Activate.ps1
+
+# instalar deps (si hace falta)
+python -m pip install -r requirements.txt
+
+# ejecutar app (ejemplo)
+$env:SPM_SECRET_KEY='dev-temp-key'
+$env:SPM_DEBUG='true'
+python .\src\backend\app.py
+
+
+MEGA PROMPT — SPM “Pro stack” (Reglas, Concurrencia, E2E, Observabilidad, Anomalías, What-if, Plantillas, Export, Feature Flags, A11y)
+
+Contexto del repo (mantener):
+
+Backend: Flask + SQLite, get_connection(), JWT en cookie access_token, rutas en src/backend/routes/.
+
+Frontend: HTML + JS vanilla en src/frontend/ con app.js, tablas ordenables, skeletons.
+
+Módulos previos: solicitudes, tratamiento, planificador, stock CSV con lote y precio, IA asistiva (opcional), SLA (opcional).
+
+1) Motor de reglas declarativas (rules.yaml + hot-reload + auditoría)
+
+Objetivo: parametrizar aprobadores, routing a planner y plazos SLA sin tocar código.
+
+Archivos nuevos:
+
+src/backend/rules.py (loader Pydantic + caché y hot-reload).
+
+rules.yaml (raíz del repo).
+
+Migración: tabla rules_evaluations.
+
+Acciones:
+
+Crear rules.py con modelos Approvals, PlannerRouting, SLARules, SPMRules, funciones:
+
+get_rules(hot=True), decide_approver(criticidad, total_usd),
+
+route_planner(centro, sector, almacen), get_sla_hours(etapa, criticidad).
+
+Cada decisión debe insertar un registro en rules_evaluations(kind, input_json, output, created_at).
+
+Integrar:
+
+En routes/solicitudes.py, reemplazar lógica dura de aprobador por decide_approver.
+
+En transición a en_tratamiento, si no hay planner asignado, usar route_planner.
+
+En checker SLA/metricas, usar get_sla_hours.
+
+rules.yaml base:
+
+approvals:
+  normal: [ { lte: 20000, approver_role: "jefe" }, { lte: 100000, approver_role: "gerencia" }, { lte: 9e18, approver_role: "director" } ]
+  alta:   [ { lte: 5000,  approver_role: "jefe" }, { lte: 50000,  approver_role: "gerencia" }, { lte: 9e18,  approver_role: "director" } ]
+planner_routing:
+  rules:
+    - { centro: "1008", sector: "MANT", almacen: "0001", planner_id: "planner01" }
+    - { sector: "LOG", planner_role: "planificador" }
+sla:
+  etapas: { aprobacion: 8, en_tratamiento: 24, traslado: 48, solped_liberacion: 24, po_emision: 24, po_entrega_total: 120 }
+
+
+Migración init_db.py:
+
+CREATE TABLE IF NOT EXISTS rules_evaluations(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  kind TEXT NOT NULL, input_json TEXT NOT NULL, output TEXT,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+
+Criterios: cambios en rules.yaml aplican en caliente; se registran evaluaciones.
+
+2) Concurrencia optimista E2E (ETag/If-Match + version)
+
+Objetivo: evitar pisadas en solicitudes, tratamiento, SOLPED/PO, traslados.
+
+Acciones:
+
+Agregar version INTEGER NOT NULL DEFAULT 0 a tablas: solicitudes, solicitud_items_tratamiento, solpeds, purchase_orders, traslados.
+
+En cada UPDATE: ... WHERE id=? AND version=? y SET version = version + 1.
+
+Middleware/respuestas:
+
+En GET /recurso/:id devolver header ETag: "v{version}".
+
+En PATCH/PUT, requerir If-Match: "v{version}". Si no coincide → 412 Precondition Failed con {code:"version_conflict"}.
+
+Front (app.js):
+
+Guardar etag al abrir detalle.
+
+Enviar headers: {"If-Match": etag} en modificaciones.
+
+Si 412, abrir diff view: muestra valores “servidor vs local”, botones para “actualizar mis cambios” o “tomar servidor”.
+
+Criterios: segundo editor recibe 412 y resuelve sin pérdida de datos.
+
+3) Pruebas E2E y smoke (Playwright)
+
+Objetivo: validar flujos críticos automáticamente.
+
+Acciones:
+
+package.json:
+
+{ "scripts": { "test:e2e": "playwright test --reporter=list" } }
+
+
+Semilla rápida en init_db.py (modo --seed e2e): crea usuarios (solicitante, aprobador, planner), 2 materiales, 1 solicitud demo.
+
+Specs:
+
+tests/e2e/crear_aprobar_tratar_finalizar.spec.ts
+
+tests/e2e/stock_parcial.spec.ts
+
+tests/e2e/conflicto_stock.spec.ts
+
+Config snapshots, screenshots y traces on failure.
+
+Criterios: npm run test:e2e corre y todos los casos pasan.
+
+4) Observabilidad (métricas + logs JSON)
+
+Objetivo: ver negocio y técnica: ciclo, %SLA, uso de stock.
+
+Acciones:
+
+Middleware en Flask:
+
+Genera X-Request-ID, mide dt_ms, loggea JSON (ruta, método, status, user_id si existe).
+
+/api/metrics:
+
+cycle_time_avg_*, sla_ok_ratio, stock_vs_compra_ratio, po_leadtime_median.
+
+SQL + agregaciones; mediana via Python si hace falta.
+
+Rotación de logs (archivo diario), nivel INFO.
+
+Criterios: endpoint devuelve métricas coherentes y logs JSON aparecen con rid.
+
+5) Detección de anomalías (MAD / z-score robusto)
+
+Objetivo: alertar precios/cantidades atípicas.
+
+Acciones:
+
+Tabla anomaly_log(id, kind, material, proveedor, valor, umbral, score, created_at).
+
+Función detect_price_outlier(material, proveedor, precio):
+
+calcula mediana y MAD de últimos N; score=|x−mediana|/(1.4826*MAD); umbral=3.5.
+
+Hook al crear/editar PO: si outlier → guardar en anomaly_log y devolver flag al front.
+
+UI: chip “⚠ anómalo (3.9)” con link a histórico.
+
+Criterios: al cargar un precio atípico, aparece alerta y se registra.
+
+6) What-if de abastecimiento (función pura + UI)
+
+Objetivo: comparar escenarios 100% compra vs stock+compra vs equivalente.
+
+Acciones:
+
+src/backend/what_if.py con:
+
+def simulate(material, qty, price_est, stock_rows:list, leadtimes:dict):
+    # retorna dict con escenarios: costo, leadtime, detalle
+
+
+Endpoint: GET /api/planificador/whatif?sol_id=..&item=...
+
+Front (modal): pestaña “What-if” con 3 tarjetas; botón “Aplicar escenario” que pre-llena tratamiento/asignaciones.
+
+Criterios: se ven los 3 escenarios y al aplicar impacta en el detalle.
+
+7) Editor de plantillas (Jinja2) con historial + preview
+
+Objetivo: editar PO/SLA/notificaciones desde Admin.
+
+Acciones:
+
+DB: templates_store(id, name UNIQUE, content, version, created_at, updated_at).
+
+API Admin: GET/POST/PATCH /api/admin/templates, POST /api/admin/templates/preview (render con datos fake).
+
+UI: src/frontend/admin-plantillas.html con editor (textarea o monaco), selector de versión, Preview.
+
+Criterios: admin puede editar, versionar y previsualizar; las plantillas se usan en outbox.
+
+8) Export analítico “cero fricción” (DuckDB/Parquet)
+
+Objetivo: BI directo en Power BI / Data Studio.
+
+Acciones:
+
+Script python -m backend.export_warehouse:
+
+Vuelca vistas v_solicitudes, v_items, v_stock, v_po, v_sla a data/warehouse/*.parquet y data/warehouse/warehouse.duckdb.
+
+Admin: botón “Exportar BI” que genera y ofrece un ZIP.
+
+Criterios: descarga ZIP con parquet/duckdb; archivos abren en BI.
+
+9) Feature flags
+
+Objetivo: activar/desactivar módulos sin redeploy.
+
+Acciones:
+
+DB: feature_flags(key TEXT PRIMARY KEY, enabled INTEGER NOT NULL DEFAULT 0).
+
+Helper backend is_enabled(key) con caché TTL 60s.
+
+Endpoint GET /api/flags.
+
+Front: ocultar botones (ERP/IA/SLA/What-if) según flags.
+
+Criterios: desactivar flag oculta UI y bloquea rutas con 404/501.
+
+10) A11y + productividad del planificador
+
+Objetivo: accesibilidad real y atajos que aceleran.
+
+Acciones:
+
+Modales con role="dialog", foco gestionado, Esc cierra, lectura de screen reader.
+
+Contraste AA; labels y aria-* en botones icónicos.
+
+Atajos globales en app.js:
+
+/ → foco buscador,
+
+. → Guardar,
+
+g t → ir a Tratamiento, g p → Planificador.
+
+Test E2E con axe-core asegurando “no violations” en páginas clave.
+
+Criterios: auditoría A11y sin violaciones críticas y atajos funcionando.
+
+11) Migraciones y seguridad de cambios
+
+Acciones:
+
+Añadir migraciones idempotentes en init_db.py (o introducir yoyo-migrations si ya se usa).
+
+Respaldar datos antes de alterar tablas (copias shadow si es necesario).
+
+12) Glue y limpieza
+
+Acciones:
+
+Añadir .env.example con:
+
+SPM_RULES_PATH=./rules.yaml
+FEATURE_ERP=1
+FEATURE_AI=1
+FEATURE_SLA=1
+LOG_LEVEL=INFO
+
+
+Documentar en README.md:
+
+Cómo activar flags, correr E2E, export BI, editar plantillas.
+
+Agregar healthcheck simple /api/health.
+
+Snippets guía (reutilizables)
+
+ETag helpers
+
+from flask import request, make_response
+def with_etag(resp, version:int):
+    r = make_response(resp); r.headers["ETag"] = f'"v{version}"'; return r
+def check_if_match(curr_version:int):
+    im = request.headers.get("If-Match")
+    if im != f'"v{curr_version}"':
+        return {"ok": False, "error": {"code":"version_conflict","message":"El recurso cambió. Refresca."}}, 412
+
+
+Log JSON
+
+@app.after_request
+def log_json(resp):
+    # agrega rid, user y dt_ms
+    return resp
+
+
+Anomalía precio (MAD)
+
+def mad(scores):
+    med = statistics.median(scores); dev = [abs(x-med) for x in scores]
+    mad = statistics.median(dev) or 1e-9; return med, 1.4826*mad
+
+Criterios de aceptación generales
+
+Reglas externas controlan aprobadores, routing y SLA sin redeploy.
+
+Ediciones concurrentes devuelven 412 con resolución asistida.
+
+E2E pasan en CI; screenshots/traces en fallos.
+
+/api/metrics reporta ciclo, %SLA, ratios stock/compra, leadtime mediana.
+
+Anomalías marcan PO atípicas y quedan logueadas.
+
+“What-if” muestra 3 escenarios y aplica el seleccionado.
+
+Admin edita plantillas con preview y versionado.
+
+Export BI genera parquet/duckdb descargable.
+
+Feature flags gobiernan módulos en backend y frontend.
+
+A11y mejora y atajos aceleran el trabajo del planificador.

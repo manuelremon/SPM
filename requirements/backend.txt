@@ -1,0 +1,7 @@
+flask==3.0.3
+flask-cors==4.0.1
+gunicorn==22.0.0
+PyJWT[crypto]==2.9.0
+pydantic==2.8.2
+requests==2.32.3
+

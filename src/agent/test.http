@@ -1,0 +1,30 @@
+### Sugerir línea de materiales
+POST http://127.0.0.1:8000/agent/suggest_line
+Content-Type: application/json
+
+{
+  "texto": "valvula 2 pulgadas acero inoxidable",
+  "planta": "Lujan"
+}
+
+### Validar solicitud
+POST http://127.0.0.1:8000/agent/validate
+Content-Type: application/json
+
+{
+  "codigo": "VALV-2IN-INOX",
+  "uom": "UN",
+  "planta": "Lujan",
+  "adjuntos_ok": false,
+  "monto_estimado": 18000
+}
+
+### Prioridad
+POST http://127.0.0.1:8000/agent/priority
+Content-Type: application/json
+
+{
+  "motivo": "parada de planta",
+  "impacto": "stockout inminente"
+}
+

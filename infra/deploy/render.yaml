@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: spm-flask
+    env: python
+    buildCommand: "pip install -r requirements/backend.txt"
+    startCommand: "gunicorn backend.app:create_app"
+    autoDeploy: true
+    envVars:
+      - key: PYTHONPATH
+        value: src
+      - key: ENV
+        value: production
+      - key: DEBUG
+        value: False
+      - key: SPM_CORS_ORIGINS
+        value: "http://localhost:5173,http://127.0.0.1:5173"

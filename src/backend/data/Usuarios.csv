@@ -1,0 +1,9 @@
+ID SPM;Apellido;Nombre;Posicion;Centro;Sector;ID YPF;Mail;Telefono;Jefe;Gerente1;Gerente2;Contraseña;Estado registro;Rol
+2;Levi;Juan;Supervisor;1008, 1050;Mantenimiento;RY55763;juanlevi@ypf.com;2995735892;carlosperez@ypf.com;andresgarcia@ypf.com;luislopez@ypf.com;a1;Activo;Solicitante
+3;Mamani;Pedro;Ingeniero;1008, 1050;Mantenimiento;RY55934;pedromamani@ypf.com;2995735329;carlosperez@ypf.com;andresgarcia@ypf.com;luislopez@ypf.com;a2;Activo;Solicitante
+4;Rosas;Roberto;Jefe;1008, 1050;Mantenimiento;RY55398;robertorosas@ypf.com;2995735407;andresgarcia@ypf.com;luislopez@ypf.com;;a3;Activo;Solicitante, Aprobador Solicitudes
+1;Remon;Manuel;Planificador;1008, 1050, 1500;Planificacion;RY32470;manuelremon@live.com.ar;2994673102;;;;a1;Activo;Administrador
+5;Perez;Carlos;Jefe;1008, 1050;Mantenimiento;RY101010;carlosperez@ypf.com;2995735892;;;;a1;Activo;Solicitante, Aprobador Solicitudes
+6;Garcia;Andres;Gerente1;1008, 1050;Mantenimiento;RY309219;andresgarcia@ypf.com;2995735898;;;;a1;Activo;Solicitante, Aprobador Solicitudes
+7;Lopez;Luis;Gerente2;1008, 1050;Mantenimiento;RY435098;luislopez@ypf.com;2995735899;;;;a1;Activo;Solicitante, Aprobador Solicitudes, Aprobador de Presupuesto
+

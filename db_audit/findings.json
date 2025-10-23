@@ -1,0 +1,80 @@
+{
+  "pragmas": {
+    "user_version": [
+      {
+        "user_version": 0
+      }
+    ],
+    "foreign_keys": [
+      {
+        "foreign_keys": 0
+      }
+    ],
+    "journal_mode": [
+      {
+        "journal_mode": "wal"
+      }
+    ],
+    "synchronous": [
+      {
+        "synchronous": 2
+      }
+    ],
+    "page_size": [
+      {
+        "page_size": 4096
+      }
+    ],
+    "cache_size": [
+      {
+        "cache_size": -2000
+      }
+    ],
+    "encoding": [
+      {
+        "encoding": "UTF-8"
+      }
+    ],
+    "auto_vacuum": [
+      {
+        "auto_vacuum": 0
+      }
+    ]
+  },
+  "integrity_check": [
+    {
+      "integrity_check": "ok"
+    }
+  ],
+  "quick_check": [
+    {
+      "quick_check": "ok"
+    }
+  ],
+  "schema": {},
+  "suspicious_columns": {},
+  "tables": [],
+  "views": [],
+  "triggers": [],
+  "expected_missing": [
+    "usuarios",
+    "roles",
+    "posiciones",
+    "sectores",
+    "centros",
+    "catalog_centros",
+    "almacenes",
+    "solicitudes",
+    "solicitud_items",
+    "adjuntos",
+    "notificaciones",
+    "change_requests",
+    "aprobaciones",
+    "presupuestos"
+  ],
+  "data_quality": {},
+  "index_suggestions": [],
+  "normalization": [],
+  "security": [],
+  "seed_suspects": []
+}

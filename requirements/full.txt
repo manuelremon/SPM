@@ -1,0 +1,14 @@
+Flask
+Flask-Cors
+gunicorn
+Werkzeug
+itsdangerous
+Jinja2
+click
+pandas
+requests
+bcrypt
+sqlalchemy
+pydantic>=2.0
+PyJWT
+

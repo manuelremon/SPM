@@ -1,0 +1,55 @@
+[2025-10-20 07:11:59,189] INFO in app: SPM dev server -> http://127.0.0.1:10000  |  API base -> /api  |  Single-origin ON
+[2025-10-20 07:11:59,245] INFO in app: FRONTEND_DIR=E:\GitHub\SPM-2\src\frontend
+[2025-10-20 07:11:59,247] INFO in app: ROUTE /                                GET
+[2025-10-20 07:11:59,248] INFO in app: ROUTE /<string:page>.html              GET
+[2025-10-20 07:11:59,248] INFO in app: ROUTE /admin-materiales.html           GET
+[2025-10-20 07:11:59,254] INFO in app: ROUTE /admin-usuarios.html             GET
+[2025-10-20 07:11:59,255] INFO in app: ROUTE /api/ai/ask                      POST
+[2025-10-20 07:11:59,255] INFO in app: ROUTE /api/ai/feedback                 POST
+[2025-10-20 07:11:59,256] INFO in app: ROUTE /api/ai/learn                    POST
+[2025-10-20 07:11:59,256] INFO in app: ROUTE /api/ai/status                   GET
+[2025-10-20 07:11:59,257] INFO in app: ROUTE /api/ai/suggest-review           POST
+[2025-10-20 07:11:59,263] INFO in app: ROUTE /api/almacenes                   GET
+[2025-10-20 07:11:59,264] INFO in app: ROUTE /api/catalogos                   GET
+[2025-10-20 07:11:59,265] INFO in app: ROUTE /api/catalogos/<resource>        GET
+[2025-10-20 07:11:59,266] INFO in app: ROUTE /api/client-logs                 POST
+[2025-10-20 07:11:59,267] INFO in app: ROUTE /api/health                      GET
+[2025-10-20 07:11:59,267] INFO in app: ROUTE /api/login                       POST
+[2025-10-20 07:11:59,268] INFO in app: ROUTE /api/logout                      POST
+[2025-10-20 07:11:59,268] INFO in app: ROUTE /api/me                          GET
+[2025-10-20 07:11:59,269] INFO in app: ROUTE /api/me/centros/solicitud        POST
+[2025-10-20 07:11:59,269] INFO in app: ROUTE /api/me/change-requests          POST
+[2025-10-20 07:11:59,270] INFO in app: ROUTE /api/me/fields                   PATCH
+[2025-10-20 07:11:59,270] INFO in app: ROUTE /api/me/mail                     POST
+[2025-10-20 07:11:59,272] INFO in app: ROUTE /api/me/telefono                 POST
+[2025-10-20 07:11:59,272] INFO in app: ROUTE /api/preferencias                GET
+[2025-10-20 07:11:59,272] INFO in app: ROUTE /api/preferencias                PATCH
+[2025-10-20 07:11:59,272] INFO in app: ROUTE /api/refresh                     POST
+[2025-10-20 07:11:59,272] INFO in app: ROUTE /api/register                    POST
+[2025-10-20 07:11:59,272] INFO in app: ROUTE /api/solicitudes                 GET
+[2025-10-20 07:11:59,274] INFO in app: ROUTE /api/solicitudes                 POST
+[2025-10-20 07:11:59,274] INFO in app: ROUTE /api/solicitudes/<int:sid>/archivos POST
+[2025-10-20 07:11:59,274] INFO in app: ROUTE /api/solicitudes/<int:sid>/archivos/<path:fname> GET
+[2025-10-20 07:11:59,274] INFO in app: ROUTE /api/solicitudes/<int:sol_id>    GET
+[2025-10-20 07:11:59,274] INFO in app: ROUTE /api/solicitudes/<int:sol_id>    PUT
+[2025-10-20 07:11:59,276] INFO in app: ROUTE /api/solicitudes/<int:sol_id>/cancel PATCH
+[2025-10-20 07:11:59,276] INFO in app: ROUTE /api/solicitudes/<int:sol_id>/decidir POST
+[2025-10-20 07:11:59,276] INFO in app: ROUTE /api/solicitudes/<int:sol_id>/decidir_cancelacion POST
+[2025-10-20 07:11:59,276] INFO in app: ROUTE /api/solicitudes/<int:sol_id>/draft PATCH
+[2025-10-20 07:11:59,276] INFO in app: ROUTE /api/solicitudes/drafts          POST
+[2025-10-20 07:11:59,276] INFO in app: ROUTE /api/solicitudes/export/excel    GET
+[2025-10-20 07:11:59,278] INFO in app: ROUTE /api/solicitudes/export/pdf      GET
+[2025-10-20 07:11:59,278] INFO in app: ROUTE /api/usuarios/me                 GET
+[2025-10-20 07:11:59,278] INFO in app: ROUTE /app.js                          GET
+[2025-10-20 07:11:59,278] INFO in app: ROUTE /assets/<path:fname>             GET
+[2025-10-20 07:11:59,278] INFO in app: ROUTE /boot.js                         GET
+[2025-10-20 07:11:59,278] INFO in app: ROUTE /crear-solicitud.html            GET
+[2025-10-20 07:11:59,280] INFO in app: ROUTE /healthz                         GET
+[2025-10-20 07:11:59,280] INFO in app: ROUTE /home                            GET
+[2025-10-20 07:11:59,280] INFO in app: ROUTE /home.html                       GET
+[2025-10-20 07:11:59,283] INFO in app: ROUTE /mi-cuenta.html                  GET
+[2025-10-20 07:11:59,283] INFO in app: ROUTE /preferencias.html               GET
+[2025-10-20 07:11:59,283] INFO in app: ROUTE /styles.css                      GET
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://127.0.0.1:10000
+Press CTRL+C to quit
