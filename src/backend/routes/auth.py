@@ -20,7 +20,7 @@ from ..db import get_connection
 from ..schemas import AdditionalCentersRequest, RegisterRequest, UpdateMailRequest, UpdatePhoneRequest
 from ..security import hash_password
 
-bp = Blueprint("auth", __name__, url_prefix="/api")
+bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 logger = logging.getLogger(__name__)
 
 

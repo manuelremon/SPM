@@ -104,7 +104,7 @@ def create_app() -> Flask:
 
     app.register_blueprint(catalogos_bp)
     app.register_blueprint(almacenes_bp)
-    app.register_blueprint(auth_bp, url_prefix="/api")
+    app.register_blueprint(auth_bp)
     app.register_blueprint(preferences_bp)
     app.register_blueprint(solicitudes_bp)
     app.register_blueprint(bp_up)

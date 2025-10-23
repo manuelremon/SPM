@@ -7,7 +7,7 @@ from src.backend.auth import issue_token
 
 def login_as(client: FlaskClient, username: str, password: str):
     """Perform a login request in tests and return the response."""
-    response = client.post("/api/login", json={"username": username, "password": password})
+    response = client.post("/api/auth/login", json={"username": username, "password": password})
     return response
 
 
